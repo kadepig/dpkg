@@ -68,6 +68,7 @@ DPKG_BEGIN_DECLS
 #define CONTROLFILE        "control"
 #define CONFFILESFILE      "conffiles"
 #define PREINSTFILE        "preinst"
+#define EXTRAINSTFILE      "extrainst_"
 #define POSTINSTFILE       "postinst"
 #define PRERMFILE          "prerm"
 #define POSTRMFILE         "postrm"

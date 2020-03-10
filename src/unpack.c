@@ -1448,6 +1448,16 @@ void process_archive(const char *filename) {
   subproc_reap(pid, BACKEND " --fsys-tarfile", SUBPROC_NOPIPE);
 
   tar_deferred_extract(newfiles_queue.head, pkg);
+  
+  if (oldversionstatus == PKG_STAT_NOTINSTALLED || oldversionstatus == PKG_STAT_CONFIGFILES) {
+    maintscript_new(pkg, EXTRAINSTFILE, "extra-installation", cidir, cidirrest,
+                    "install", NULL);
+  } else {
+    maintscript_new(pkg, EXTRAINSTFILE, "extra-installation", cidir, cidirrest,
+                    "upgrade",
+                    versiondescribe(&pkg->installed.version, vdew_nonambig),
+                    NULL);
+  }
 
   if (oldversionstatus == PKG_STAT_HALFINSTALLED ||
       oldversionstatus == PKG_STAT_UNPACKED) {
