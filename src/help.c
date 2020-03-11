@@ -121,7 +121,7 @@ void checkpath(void) {
     /* Mac OS X uses dyld (Mach-O) instead of ld.so (ELF), and does not have
      * an ldconfig. */
 #if defined(__APPLE__) && defined(__MACH__)
-    "update_dyld_shared_cache",
+    "launchctl",
 #elif defined(__GLIBC__) || defined(__UCLIBC__) || \
       defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__)
     "ldconfig",
