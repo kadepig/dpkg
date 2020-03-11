@@ -17,6 +17,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+ 
+#if defined(__APPLE__) && defined(__MACH__)
+#include <string.h>
+#include <xlocale.h>
+#endif
 
 #include <config.h>
 #include <compat.h>
