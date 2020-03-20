@@ -18,6 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <sys/errno.h>
 #include <config.h>
 #include <compat.h>
 
@@ -179,7 +180,24 @@ void
 command_exec(struct command *cmd)
 {
 	execvp(cmd->filename, (char * const *)cmd->argv);
-	ohshite(_("unable to execute %s (%s)"), cmd->name, cmd->filename);
+	if (errno == EPERM || errno == ENOEXEC) {
+		const char *shell;
+		if (access(DEFAULTSHELL, X_OK) == 0) {
+			shell = DEFAULTSHELL;
+		} else if (access("/etc/alternatives/sh", X_OK) == 0) {
+			shell = "/etc/alternatives/sh";
+		} else if (access("/bin/bash", X_OK) == 0) {
+			shell = "/bin/bash";
+		} else {
+			ohshite(_("unable to execute %s (%s): no shell!"), cmd->name, cmd->filename);
+		}
+		struct command newcmd;
+		command_init(&newcmd, shell, NULL);
+		command_add_args(&newcmd, shell, "-c", "\"$0\" \"$@\"", NULL);
+		command_add_argl(&newcmd, cmd->argv);
+		execvp(shell, (char * const *)newcmd.argv);
+		ohshite(_("unable to execute %s (%s)"), cmd->name, cmd->filename);
+	}
 }
 
 /**
